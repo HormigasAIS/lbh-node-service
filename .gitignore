@@ -5,3 +5,7 @@ main
 *.db
 grpc_client.go
 main.bak
+main.bak
+grpc_server.go
+dashboard.py
+lbh_nodo.db
