@@ -7,12 +7,16 @@ import (
         "github.com/gin-gonic/gin"
 )
 
-func SetupServer(ucase *usecase.FeromonaUcase) {
-        h := handler.NewFeromonaHandler(ucase)
+func SetupServer(u *usecase.FeromonaUcase) {
+        h := handler.NewFeromonaHandler(u)
         r := gin.Default()
 
         r.GET("/ping", func(c *gin.Context) {
                 c.JSON(200, gin.H{"code": 200, "message": "pong LBH"})
+        })
+
+        r.GET("/metrics", func(c *gin.Context) {
+                c.JSON(200, usecase.ObtenerMetricas())
         })
 
         r.POST("/feromona", h.Emitir)

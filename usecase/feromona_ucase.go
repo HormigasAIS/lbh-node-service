@@ -22,6 +22,9 @@ func (u *FeromonaUcase) Emitir(nodo, payload, firma string) (*model.Feromona, er
                 TS:      time.Now().Unix(),
         }
         err := u.Repo.Guardar(f)
+        if err == nil {
+                RegistrarMetrica(nodo)
+        }
         return f, err
 }
 
