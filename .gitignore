@@ -9,3 +9,5 @@ main.bak
 grpc_server.go
 dashboard.py
 lbh_nodo.db
+main
+client_vuelo.go
