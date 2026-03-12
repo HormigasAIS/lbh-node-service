@@ -2,14 +2,22 @@ package main
 
 import (
         "lbh-node-service/config"
+        "lbh-node-service/interface/grpc"
+        "lbh-node-service/interface/rest"
         "lbh-node-service/repository"
         "lbh-node-service/usecase"
-        "lbh-node-service/interface/rest"
+        "os"
 )
 
 func main() {
         config.InitDB()
         repo := repository.NewFeromonaRepo(config.DB)
         ucase := usecase.NewFeromonaUcase(repo)
-        rest.SetupServer(ucase)
+
+        args := os.Args
+        if len(args) > 1 && args[1] == "--server=grpc" {
+                grpc.SetupServer(ucase)
+        } else {
+                rest.SetupServer(ucase)
+        }
 }

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package lbh;
+
+option go_package = "lbh-node-service/interface/grpc/genproto";
+
+message FeromonaLBH {
+  string nodo    = 1;
+  string payload = 2;
+  string firma   = 3;
+  int64  ts      = 4;
+}
+
+message FeromonaRespuesta {
+  int32  code    = 1;
+  string message = 2;
+  string nodo    = 3;
+  string payload = 4;
+  int64  ts      = 5;
+}
+
+message Vacio {}
+
+service FeromonaService {
+  rpc EmitirFeromona(FeromonaLBH)   returns (FeromonaRespuesta);
+  rpc ListarFeromonas(Vacio)        returns (stream FeromonaRespuesta);
+}
