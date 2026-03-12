@@ -1,3 +1,7 @@
 lbh_nodo.db
 main
 *.log
+main
+*.db
+grpc_client.go
+main.bak
