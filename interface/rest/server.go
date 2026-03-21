@@ -22,7 +22,7 @@ func SetupServer(u *usecase.FeromonaUcase) {
 
 	r.POST("/feromona", h.Emitir)
 	r.GET("/feromonas", h.Listar)
-	r.POST("/lbh/validate", v.Validate)
+	r.POST("/v1/lbh/validate", v.Validate)
 
 	r.Run(":8100")
 }
