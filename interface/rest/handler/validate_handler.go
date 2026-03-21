@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"lbh-node-service/usecase"
 	"net/http"
 	"os"
 	"os/exec"
@@ -106,7 +107,7 @@ func firmarLBH(action, asset, estado, hashImg, tipo string) string {
 	payload := strings.Join([]string{action, asset, estado, hashImg, tipo, ts}, "|")
 	mac := hmac.New(sha256.New, []byte(secretKey))
 	mac.Write([]byte(payload))
-	return fmt.Sprintf("%x", mac.Sum(nil))[:16]
+	return fmt.Sprintf("%x", mac.Sum(nil))
 }
 
 func verificarFirmaRequest(req ValidateRequest) bool {
@@ -202,7 +203,7 @@ func notificarEspejo(feromona FeromonaLBH) {
 		asset = asset[:40]
 	}
 	texto := fmt.Sprintf("%s LBH://%s [%s] asset:%s sig:%s",
-		icon, feromona.Action, feromona.Type, asset, feromona.Sig)
+		icon, feromona.Action, feromona.Type, asset, feromona.Sig[:16])
 	body := fmt.Sprintf(`{"text":"%s"}`, texto)
 	req, err := http.NewRequest("POST", webhook, strings.NewReader(body))
 	if err != nil {
@@ -230,10 +231,12 @@ func keys(m map[string]bool) []string {
 	return k
 }
 
-type ValidateHandler struct{}
+type ValidateHandler struct {
+	Ucase *usecase.FeromonaUcase
+}
 
-func NewValidateHandler() *ValidateHandler {
-	return &ValidateHandler{}
+func NewValidateHandler(u *usecase.FeromonaUcase) *ValidateHandler {
+	return &ValidateHandler{Ucase: u}
 }
 
 func (h *ValidateHandler) Validate(c *gin.Context) {
@@ -305,6 +308,14 @@ func (h *ValidateHandler) Validate(c *gin.Context) {
 			msg += " | propietario: " + prop
 		}
 	}
+
+	// PERSISTIR en lbh_nodo.db para propagacion
+	payload := fmt.Sprintf("LBH://%s|%s|%s|%s",
+		strings.ToUpper(estado), req.Type, hashImg, sig[:16])
+	go func() {
+		h.Ucase.Emitir(req.Nodo, payload, sig[:16])
+	}()
+
 	go notificarEspejo(feromona)
 	c.JSON(http.StatusOK, ValidateResponse{
 		Code:     200,

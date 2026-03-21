@@ -9,7 +9,7 @@ import (
 
 func SetupServer(u *usecase.FeromonaUcase) {
 	h := handler.NewFeromonaHandler(u)
-	v := handler.NewValidateHandler()
+	v := handler.NewValidateHandler(u)
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
