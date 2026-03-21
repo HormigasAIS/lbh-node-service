@@ -1,39 +1,102 @@
 #!/usr/bin/env python3
 """
-LBH Sensor — Hello World del mundo físico
-Lee sensores reales del Android y envia feromonas via /v1/lbh/validate
+LBH Sensor Daemon — sensores fisicos Android → feromonas LBH
+Fix: sig 64 hex + subtype + BSSID/IP/RSSI + daemon loop
 CLHQ / HormigasAIS 2026
 """
 
-import json, os, subprocess, time, urllib.request
+import json, os, subprocess, time, urllib.request, hashlib, hmac, signal, sys
 
-ENDPOINT = "http://localhost:8100/v1/lbh/validate"
+ENDPOINT   = "http://localhost:8100/v1/lbh/validate"
+NODO       = "LBH-DDCD"
+SECRET_KEY = "hormigasais-soberano-2026"
+INTERVALO  = 30  # segundos entre lecturas
+LOG_FILE   = os.path.expanduser(
+    "~/hormigasais-lab/lbh-node-service/sensor.log")
 
+running = True
+
+def signal_handler(sig, frame):
+    global running
+    print("\n🐜 Sensor daemon detenido")
+    running = False
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+
+# ─────────────────────────────────────────
+# FIRMA — 64 hex completo
+# ─────────────────────────────────────────
+def firmar(data):
+    msg = json.dumps(data, sort_keys=True)
+    return hmac.new(
+        SECRET_KEY.encode(), msg.encode(), hashlib.sha256
+    ).hexdigest()  # 64 hex — sin truncar
+
+# ─────────────────────────────────────────
+# LOG SOBERANO
+# ─────────────────────────────────────────
+def log(msg):
+    ts = time.strftime("%Y-%m-%d %H:%M:%S")
+    linea = f"[{ts}] 🐜 {msg}"
+    print(linea)
+    with open(LOG_FILE, "a") as f:
+        f.write(linea + "\n")
+
+# ─────────────────────────────────────────
+# SENSORES — con subtype
+# ─────────────────────────────────────────
 def leer_bateria():
     try:
         r = subprocess.run(
             ["termux-battery-status"],
             capture_output=True, text=True, timeout=5)
-        return json.loads(r.stdout)
+        data = json.loads(r.stdout)
+        return {
+            "type":        "SENSOR",
+            "subtype":     "BATTERY",
+            "health":      data.get("health", "?"),
+            "plugged":     data.get("plugged", "?"),
+            "temperature": data.get("temperature", 0),
+            "percentage":  data.get("percentage", 0),
+            "ts":          int(time.time())
+        }
     except Exception as e:
-        return {"error": str(e)}
+        return {"type": "SENSOR", "subtype": "BATTERY", "error": str(e)}
 
 def leer_wifi():
     try:
         r = subprocess.run(
             ["termux-wifi-connectioninfo"],
             capture_output=True, text=True, timeout=5)
-        return json.loads(r.stdout)
+        data = json.loads(r.stdout)
+        return {
+            "type":    "SENSOR",
+            "subtype": "WIFI",
+            "bssid":   data.get("bssid", "?"),
+            "ip":      data.get("ip", "?"),
+            "rssi":    data.get("rssi", 0),
+            "link_speed": data.get("link_speed_mbps", 0),
+            "ts":      int(time.time())
+        }
     except Exception as e:
-        return {"error": str(e)}
+        return {"type": "SENSOR", "subtype": "WIFI", "error": str(e)}
 
-def enviar_feromona(sensor_type, data, nodo="LBH-DDCD"):
-    # Usar URL publica como proxy — datos reales van en nodo
+# ─────────────────────────────────────────
+# ENVIAR FEROMONA
+# ─────────────────────────────────────────
+def enviar_feromona(sensor_data):
+    subtype = sensor_data.get("subtype", "UNKNOWN")
+    nodo_id = f"{NODO}:{subtype}"
+
+    # Firma soberana del sensor
+    sig_sensor = firmar(sensor_data)
+
     payload = json.dumps({
         "url":  "https://raw.githubusercontent.com/HormigasAIS/LBH-Net/main/README.md",
-        "nodo": f"{nodo}:{sensor_type}:{json.dumps(data)[:30]}",
+        "nodo": nodo_id,
         "type": "SENSOR",
-        "ttl":  60
+        "ttl":  INTERVALO * 2
     }).encode()
 
     req = urllib.request.Request(
@@ -44,58 +107,75 @@ def enviar_feromona(sensor_type, data, nodo="LBH-DDCD"):
     try:
         with urllib.request.urlopen(req, timeout=5) as r:
             resp = json.loads(r.read())
-            return resp
+            feromona = resp.get("feromona", {})
+            return {
+                "ok":      True,
+                "estado":  feromona.get("estado", "?"),
+                "sig_lbh": feromona.get("sig", "?"),
+                "sig_sensor": sig_sensor[:16] + "...",
+                "sig_sensor_full": sig_sensor
+            }
     except Exception as e:
-        return {"error": str(e)}
+        return {"ok": False, "error": str(e)}
 
-def main():
-    print("═" * 50)
-    print("🐜 LBH Sensor — Hello World físico")
-    print("═" * 50)
+# ─────────────────────────────────────────
+# CICLO DAEMON
+# ─────────────────────────────────────────
+def ciclo():
+    log(f"iniciando lectura — nodo: {NODO}")
 
     # Batería
-    print("\n📡 Leyendo batería...")
     bat = leer_bateria()
-    print(f"   health:      {bat.get('health','?')}")
-    print(f"   plugged:     {bat.get('plugged','?')}")
-    print(f"   temperature: {bat.get('temperature','?')}°C")
-    print(f"   percentage:  {bat.get('percentage','?')}%")
-
-    # Enviar feromona batería
-    print("\n📡 Enviando feromona SENSOR batería...")
-    r = enviar_feromona("BATTERY", bat)
-    if "feromona" in r:
-        f = r["feromona"]
-        print(f"   ✅ estado:  {f.get('estado','?')}")
-        print(f"   ✅ action:  {f.get('action','?')}")
-        print(f"   ✅ sig:     {f.get('sig','?')}")
-        print(f"   ✅ type:    {f.get('type','?')}")
+    log(f"BATTERY temp:{bat.get('temperature')}°C "
+        f"pct:{bat.get('percentage')}% "
+        f"health:{bat.get('health')}")
+    r = enviar_feromona(bat)
+    if r["ok"]:
+        log(f"BATTERY → feromona OK | "
+            f"sig_lbh:{r['sig_lbh']} | "
+            f"sig_sensor:{r['sig_sensor']}")
     else:
-        print(f"   ⚠️  {r}")
+        log(f"BATTERY → error: {r.get('error')}")
 
     # WiFi
-    print("\n📡 Leyendo WiFi...")
     wifi = leer_wifi()
-    print(f"   ssid:    {wifi.get('ssid','?')}")
-    print(f"   ip:      {wifi.get('ip','?')}")
-    print(f"   rssi:    {wifi.get('rssi','?')} dBm")
-
-    # Enviar feromona WiFi
-    print("\n📡 Enviando feromona SENSOR WiFi...")
-    r = enviar_feromona("WIFI", wifi)
-    if "feromona" in r:
-        f = r["feromona"]
-        print(f"   ✅ estado:  {f.get('estado','?')}")
-        print(f"   ✅ sig:     {f.get('sig','?')}")
+    log(f"WIFI ip:{wifi.get('ip')} "
+        f"rssi:{wifi.get('rssi')}dBm "
+        f"bssid:{wifi.get('bssid')}")
+    r = enviar_feromona(wifi)
+    if r["ok"]:
+        log(f"WIFI → feromona OK | "
+            f"sig_lbh:{r['sig_lbh']} | "
+            f"sig_sensor:{r['sig_sensor']}")
     else:
-        print(f"   ⚠️  {r}")
+        log(f"WIFI → error: {r.get('error')}")
 
-    print("\n" + "═" * 50)
-    print("✅ Hello World físico completado")
-    print(f"   nodo: LBH-DDCD")
-    print(f"   endpoint: {ENDPOINT}")
-    print(f"   DOI: 10.5281/zenodo.17767205")
-    print("═" * 50)
+# ─────────────────────────────────────────
+# MAIN
+# ─────────────────────────────────────────
+def main():
+    print("═" * 52)
+    print("🐜 LBH Sensor Daemon")
+    print(f"   nodo:      {NODO}")
+    print(f"   endpoint:  {ENDPOINT}")
+    print(f"   intervalo: {INTERVALO}s")
+    print(f"   sig:       HMAC-SHA256 64 hex")
+    print(f"   subtypes:  BATTERY | WIFI")
+    print(f"   log:       sensor.log")
+    print("═" * 52)
+    print("Ctrl+C para detener\n")
+
+    ciclo_num = 0
+    while running:
+        ciclo_num += 1
+        print(f"\n── Ciclo {ciclo_num} ──────────────────────────")
+        ciclo()
+        if running:
+            log(f"esperando {INTERVALO}s...")
+            time.sleep(INTERVALO)
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1 and sys.argv[1] == "once":
+        ciclo()
+    else:
+        main()
