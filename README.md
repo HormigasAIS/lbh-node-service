@@ -1,7 +1,21 @@
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/HormigasAIS/lbh-node-service)
+[![LBH](https://img.shields.io/badge/LBH-v1.1-purple)](https://doi.org/10.5281/zenodo.17767205)
+[![Platform](https://img.shields.io/badge/platform-Android%20Termux-orange)](https://github.com/HormigasAIS/lbh-node-service)
+
 # 🐜 HormigasAIS — LBH Protocol Node Service
 
 > Red distribuida soberana construida desde Android/Termux en El Salvador  
 > Protocolo LBH v1.1 · DOI: [10.5281/zenodo.17767205](https://doi.org/10.5281/zenodo.17767205)
+
+## Colony Panel
+
+![Colony Panel](docs/panel_colony.png)
+
+- 3844 feromonas acumuladas
+- 9 nodos activos
+- A16 master + A20 sensor
+- Tiempo real cada 3s
+
 
 ---
 
