@@ -11,7 +11,7 @@
 
 ![Colony Panel](docs/panel_colony.png)
 
-- 6,655 feromonas acumuladas
+- 6,755 feromonas acumuladas
 - 9 nodos activos
 - A16 master + A20 sensor
 - Tiempo real cada 3s
