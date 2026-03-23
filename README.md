@@ -1,12 +1,8 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19177759.svg)](https://doi.org/10.5281/zenodo.19177759)
-[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/HormigasAIS/lbh-node-service)
-[![LBH](https://img.shields.io/badge/LBH-v1.1-purple)](https://doi.org/10.5281/zenodo.17767205)
-[![Platform](https://img.shields.io/badge/platform-Android%20Termux-orange)](https://github.com/HormigasAIS/lbh-node-service)
-
 # HormigasAIS LBH Protocol Node Service
+**Red distribuida soberana desde Android/Termux · Protocolo LBH v1.1**
+DOI: [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
 
-Red distribuida soberana construida desde Android/Termux en El Salvador
-Protocolo LBH v1.1 · DOI: 10.5281/zenodo.19177759
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19177759.svg)](https://doi.org/10.5281/zenodo.19177759) [![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/HormigasAIS/lbh-node-service) [![LBH](https://img.shields.io/badge/LBH-v1.1-purple)](https://doi.org/10.5281/zenodo.17767205) [![Platform](https://img.shields.io/badge/platform-Android%20Termux-orange)](https://github.com/HormigasAIS/lbh-node-service)
 
 ---
 
@@ -144,40 +140,41 @@ DOI: 10.5281/zenodo.19177759
 github.com/HormigasAIS/lbh-node-service
 ```
 
+> Representacion documentativa — no refleja estado en tiempo real.
+
 ---
 
 ## Colony Panel — Sistema en vivo
 
 [![Colony Panel](docs/panel_colony.png)](docs/panel_colony.png)
 
-- 7,500+ feromonas acumuladas en produccion
-- 9 nodos activos identificados
-- Nodo master: A16 192.168.1.5 (REST + gRPC)
-- Nodo sensor: A20 192.168.1.6 (telemetria fisica)
-- Actualizacion en tiempo real cada 3s
+| Metrica | Valor |
+|---|---|
+| Feromonas acumuladas | 7,500+ |
+| Nodos activos | 9 |
+| Nodo master | A16 192.168.1.5 |
+| Nodo sensor | A20 192.168.1.6 |
+| Actualizacion | cada 3s |
 
-    python3 ~/hormigasais-lab/lbh_panel_web.py
-    # http://[IP-LOCAL]:8300
-
-    bash ~/hormigasais-core/scripts/start_colonia.sh
-
----
-
-## MESENTERY v1.0 — Licencia Soberana
-
-```
-BASE LEGAL:  CC BY 4.0 + LBH Clause
-ATRIBUCION:  DOI 10.5281/zenodo.17767205 · CLHQ
-SOBERANIA:   Sin propiedad centralizada exclusiva
-ETICA:       Sin dano civil · Sin vigilancia · Sin armas
-
-A living system that connects, nourishes, and sustains
-distributed nodes without domination
+```bash
+python3 ~/hormigasais-lab/lbh_panel_web.py
+# http://[IP-LOCAL]:8300
+bash ~/hormigasais-core/scripts/start_colonia.sh
 ```
 
 ---
 
-## Evolucion historica
+## Componentes y Servicios
+
+- `hormigasais-core` nodos_estado · sync_nodos_remotos · start_colonia · levantar_a20
+- Contratos **XOXO** hormiga_slack · slack_fiscal · red_a16_a20
+- Espejo **Slack** hormiga_slack_fiscal · DHT espejo SQLite · /lbh-check
+- Colony Heartbeat colony_heartbeat.py actualiza README cada 100 feromonas
+- SEFORIS v0.7 observador diagnostico bajo demanda
+
+---
+
+## Evolucion del Ecosistema
 
 | Version | Hito | Estado |
 |---|---|---|
@@ -186,14 +183,37 @@ distributed nodes without domination
 | v1.7 | Arquitectura completa + RFC-0001-0006 | OK |
 | v1.8 | Network simulator + fanout hibrido | OK |
 | v1.9 | Testnet 3 nodos Android | OK |
-| v2.0-dev | DHT Kademlia soberano | OK |
-| v2.0-dev | REST /v1/lbh/validate + seguridad | OK |
+| v2.0-dev | DHT Kademlia + REST + seguridad | OK |
 | v2.0-dev | Sensor daemon fisico | OK |
-| v2.0-dev | Red distribuida A16+A20 real | OK Mar 2026 |
+| v2.0-dev | Red distribuida A16+A20 | OK Mar 2026 |
 | v2.0-dev | Colony Panel + SEFORIS v0.7 | OK Mar 2026 |
 | v2.0-dev | MESENTERY v1.0 + Zenodo v2 | OK Mar 2026 |
 | v2.0 | AirCity produccion | 2027 |
 | v3.0 | Open protocol + community | futuro |
+
+---
+
+## MESENTERY v1.0 — Licencia Soberana
+
+- **Base legal:** CC BY 4.0 + LBH Clause
+- **Atribucion:** DOI 10.5281/zenodo.17767205 · CLHQ
+- **Soberania:** Sin propiedad centralizada exclusiva
+- **Etica:** Sin dano civil · Sin vigilancia · Sin armas
+
+> A living system that connects, nourishes, and sustains distributed nodes without domination.
+
+---
+
+## Leyenda
+
+| Simbolo | Significado |
+|---|---|
+| `┌──┐` | Servicio / componente activo |
+| `▼` | Flujo de feromonas / datos |
+| `████` | Capacidad implementada |
+| `░░░░` | Planificado |
+| OK | Operativo en produccion |
+| [sig] | Firma HMAC-SHA256 primeros 16 hex |
 
 ---
 
@@ -211,8 +231,11 @@ curl http://localhost:8100/ping
 
 ## Autor
 
-CLHQ — Cristhiam Leonardo Hernandez Quinonez
+**CLHQ — Cristhiam Leonardo Hernandez Quinonez**
 San Miguel, El Salvador 2026
 Desarrollado desde Android/Termux sin servidores sin nube.
 
-HormigasAIS — La colonia es soberana
+DOI: [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
+[github.com/HormigasAIS/lbh-node-service](https://github.com/HormigasAIS/lbh-node-service)
+
+*HormigasAIS — La colonia es soberana*
