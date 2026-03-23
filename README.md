@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19177759.svg)](https://doi.org/10.5281/zenodo.19177759)
+
 [![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/HormigasAIS/lbh-node-service)
 [![LBH](https://img.shields.io/badge/LBH-v1.1-purple)](https://doi.org/10.5281/zenodo.17767205)
 [![Platform](https://img.shields.io/badge/platform-Android%20Termux-orange)](https://github.com/HormigasAIS/lbh-node-service)
