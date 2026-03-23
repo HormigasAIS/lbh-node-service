@@ -1,0 +1,95 @@
+═══════════════════════════════════════════════════════
+        HORMIGASAIS · EVOLUCIÓN DEL ECOSISTEMA
+        MESENTERY v1.0 — Soberanía Distribuida
+═══════════════════════════════════════════════════════
+
+  ┌─────────────────────────────────────────────────┐
+  │  PROTOCOLO LBH v1.1                             │
+  │  DOI: 10.5281/zenodo.17767205                   │
+  │  Formato binario 16 bytes · 89.3% reducción BW  │
+  └─────────────────────┬───────────────────────────┘
+                        │
+          ┌─────────────▼─────────────┐
+          │      lbh-node-service     │
+          │  REST :8100 · gRPC :7100  │
+          │  /v1/lbh/validate         │
+          │  HMAC · TTL · ACL · Rate  │
+          └─────────────┬─────────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼────────┐
+│   A16_CORE   │ │  A20_NODE   │ │  SÉFORIS     │
+│  192.168.1.5 │ │ 192.168.1.6 │ │  Observador  │
+│  LBH-DDCD    │ │  AirCity    │ │  (demanda)   │
+│              │ │             │ │              │
+│ BATTERY+WIFI │ │ BATTERY+WIFI│ │  v0.5 lógico │
+│ sensor 30s   │ │ bridge 30s  │ │  v0.6 físico │
+│ lbh_nodo.db  │ │ registrar   │ │  v0.7 sync   │
+└───────┬──────┘ └──────┬──────┘ └─────┬────────┘
+        │               │               │
+        └───────────────▼───────────────┘
+                        │
+          ┌─────────────▼─────────────┐
+          │     hormigasais-core      │
+          │  db/lbh_nodo.db           │
+          │  nodos_estado             │
+          │  sync_nodos_remotos.py    │
+          │  alerta_nodos_inactivos   │
+          └─────────────┬─────────────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+┌───────▼──────┐ ┌──────▼──────┐ ┌─────▼────────┐
+│   CONTRATOS  │ │   ESPEJO    │ │  HEARTBEAT   │
+│   XOXO       │ │   SLACK     │ │  colony_hb   │
+│              │ │             │ │              │
+│ hormiga_slack│ │ DHT espejo  │ │ README auto  │
+│ slack_fiscal │ │ :5000 bot   │ │ cada 100 fer │
+│ red_a16_a20  │ │ /lbh-check  │ │ → GitHub     │
+└───────┬──────┘ └──────┬──────┘ └─────┬────────┘
+        │               │               │
+        └───────────────▼───────────────┘
+                        │
+          ┌─────────────▼─────────────┐
+          │     MESENTERY v1.0        │
+          │  Sovereign Specification  │
+          │                           │
+          │  CC BY 4.0 + LBH Clause   │
+          │  Atribución: DOI + CLHQ   │
+          │  Soberanía descentralizada│
+          │  Ética: sin daño · sin    │
+          │  vigilancia · sin armas   │
+          │                           │
+          │  "connects, nourishes,    │
+          │   sustains without        │
+          │   domination"             │
+          └─────────────┬─────────────┘
+                        │
+          ┌─────────────▼─────────────┐
+          │  HORMIGASAIS v2.0-dev     │
+          │  Ecosistema Autónomo      │
+          │                           │
+          │  ✅ 7,500+ feromonas      │
+          │  ✅ 9 nodos identificados │
+          │  ✅ 2 dispositivos físicos│
+          │  ✅ Colony Panel :8300    │
+          │  ✅ README vivo en GitHub │
+          │  ✅ SÉFORIS diagnostica   │
+          │  ✅ start_colonia.sh boot │
+          │  ✅ levantar_a20.sh rescue│
+          │                           │
+          │  → AirCity 2027           │
+          │  → Drones UTM             │
+          │  → Sensores IoT           │
+          └───────────────────────────┘
+
+═══════════════════════════════════════════════════════
+PRINCIPIOS MESENTERY:
+  ↓  Cada capa conecta sin dominar la anterior
+  ↓  Cada nodo nutre sin centralizar el control
+  ↓  Cada feromona sustenta sin crear dependencia
+═══════════════════════════════════════════════════════
+CLHQ · San Miguel, El Salvador 🇸🇻 · 2026
+DOI: 10.5281/zenodo.17767205
+═══════════════════════════════════════════════════════
