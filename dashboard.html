@@ -40,7 +40,7 @@ Acceso Hibrido: http://192.168.1.5:3001 | Sincronizado via Gitea ARM64
 <script>
 async function update(){
 try{
-const r=await fetch("/api/stats");
+const r=await fetch("http://192.168.1.5:3002/api/stats");
 const d=await r.json();
 document.getElementById("total").textContent=d.total.toLocaleString();
 document.getElementById("nodos").textContent=d.nodes.length;
