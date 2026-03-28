@@ -1,31 +1,27 @@
 #!/bin/bash
-# HORMIGASAIS · lbh_service.sh
-# Control del Micro-Servicio API LBH
+# HORMIGASAIS · lbh_service.sh · v2.2-stable
+DIR="/data/data/com.termux/files/home/hormigasais-lab/lbh-node-service"
+API_SCRIPT="$DIR/lbh_api.py"
+LOG_FILE="$DIR/lbh_api.log"
 
-API_SCRIPT="/data/data/com.termux/files/home/hormigasais-lab/lbh-node-service/lbh_api.py"
-LOG_FILE="/data/data/com.termux/files/home/hormigasais-lab/lbh_api.log"
-
-case "" in
+case "$1" in
     start)
-        if pgrep -f "lbh_api.py" > /dev/null; then
-            echo "🐜 LBH API ya está corriendo."
-        else
-            echo "🚀 Iniciando API LBH en segundo plano..."
-            nohup python3 "" > "" 2>&1 &
-            echo "✅ API activa (Puerto 3002)."
-        fi
+        pgrep -f "lbh_api.py" > /dev/null && echo "🐜 Ya corre." && exit
+        echo "🚀 Iniciando API LBH..."
+        nohup python3 "$API_SCRIPT" > "$LOG_FILE" 2>&1 &
+        sleep 1
+        echo "✅ API en puerto 3002."
         ;;
     stop)
-        echo "🛑 Deteniendo API LBH..."
-        pkill -f "lbh_api.py" && echo "✅ Servicio detenido." || echo "❌ No hay servicio activo."
+        echo "🛑 Deteniendo API..."
+        pkill -f "lbh_api.py" && echo "✅ Detenida." || echo "❌ No activa."
         ;;
     status)
         if pgrep -f "lbh_api.py" > /dev/null; then
-            PID=
-            echo "🟢 API LBH ACTIVA (PID: )"
-            tail -n 3 ""
+            echo "🟢 ACTIVA (Puerto 3002)"
+            [ -f "$LOG_FILE" ] && tail -n 2 "$LOG_FILE"
         else
-            echo "🔴 API LBH INACTIVA"
+            echo "🔴 INACTIVA"
         fi
         ;;
     *)
