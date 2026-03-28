@@ -1,264 +1,51 @@
-# HormigasAIS LBH Protocol Node Service
-**Red distribuida soberana desde Android/Termux · Protocolo LBH v1.1**
-DOI: [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
+# HormigasAIS - LBH Node Service
+### Infraestructura de Inteligencia Distribuida y Soberana
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19177759.svg)](https://doi.org/10.5281/zenodo.19177759) [![Status](https://img.shields.io/badge/status-active-brightgreen)](https://github.com/HormigasAIS/lbh-node-service) [![LBH](https://img.shields.io/badge/LBH-v1.1-purple)](https://doi.org/10.5281/zenodo.17767205) [![Platform](https://img.shields.io/badge/platform-Android%20Termux-orange)](https://github.com/HormigasAIS/lbh-node-service)
-
----
-
-## Ecosistema HormigasAIS
-
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║          HORMIGASAIS · ECOSISTEMA DISTRIBUIDO SOBERANO                      ║
-║          MESENTERY v1.0 · DOI: 10.5281/zenodo.19177759                      ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  [![DOI][zenodo]] [![Status:active]] [![LBH:v1.1]] [![Android/Termux]]      ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-┌─────────────────────────── PROTOCOLO LBH v1.1 ────────────────────────────┐
-│  Formato binario 16 bytes · 89.3% reducción BW · DOI: 10.5281/zenodo.17767205│
-│  [event_type 1B][order_id 8B][status 1B][timestamp 4B][CRC-16 2B]          │
-└─────────────────────────────────┬──────────────────────────────────────────┘
-                                  │
-                    ┌─────────────▼─────────────┐
-                    │     lbh-node-service       │
-                    │   Go + Gin · ARM64         │
-                    │                            │
-                    │  REST  :8100 /v1/lbh/validate
-                    │  gRPC  :7100 EmitirFeromona│
-                    │  Bridge:9001 CENTINELA_V24 │
-                    │                            │
-                    │  SEGURIDAD:                │
-                    │  ├ HMAC-SHA256 64 hex      │
-                    │  ├ TTL (10s–3600s)         │
-                    │  ├ Rate limit 10/60s       │
-                    │  └ ACL + clasificación     │
-                    │    SENSOR·DRONE·CONTRACT   │
-                    └──────────────┬─────────────┘
-                                   │
-          ┌────────────────────────┼────────────────────────┐
-          │                        │                        │
-┌─────────▼──────────┐  ┌──────────▼─────────┐  ┌──────────▼──────────┐
-│     A16_CORE       │  │     A20_NODE        │  │      SÉFORIS        │
-│  192.168.1.5       │  │  192.168.1.6        │  │   (bajo demanda)    │
-│  LBH-DDCD          │  │  AirCity            │  │                     │
-│                    │  │                     │  │  v0.5 · lógico      │
-│  sensor 30s:       │  │  bridge 30s:        │  │  v0.6 · físico      │
-│  BATTERY 28°C      │  │  BATTERY            │  │  v0.7 · sync        │
-│  WIFI -59dBm       │  │  WIFI               │  │                     │
-│                    │  │                     │  │  Clusters A16↔A20   │
-│  lbh_nodo.db       │  │  registrar_nodo.py  │  │  Estado fisico      │
-│  7,500+ feromonas  │  │  loop 30s           │  │  Nodos fantasma     │
-│                    │  │                     │  │  Alertas inactivos  │
-│  loop A16_CORE ──────────────────────────────────────────────────────│
-└─────────┬──────────┘  └──────────┬──────────┘  └──────────┬──────────┘
-          │                        │                         │
-          │  feromonas ────────────┘                         │
-          │                                                  │
-          └──────────────────────────┬───────────────────────┘
-                                     │
-                    ┌────────────────▼────────────────┐
-                    │       hormigasais-core           │
-                    │                                  │
-                    │  db/lbh_nodo.db                  │
-                    │  nodos_estado (A16_CORE, A20)    │
-                    │  sync_nodos_remotos.py           │
-                    │  alerta_nodos_inactivos.py       │
-                    │  start_colonia.sh (boot)         │
-                    │  levantar_a20.sh (rescue)        │
-                    └────────────────┬────────────────┘
-                                     │
-          ┌──────────────────────────┼──────────────────────────┐
-          │                          │                          │
-┌─────────▼──────────┐  ┌────────────▼───────────┐  ┌──────────▼──────────┐
-│   CONTRATOS XOXO   │  │    ESPEJO SLACK         │  │  COLONY HEARTBEAT   │
-│                    │  │                         │  │                     │
-│  XOXO fiscalizador │  │  hormiga_slack          │  │  colony_heartbeat.py│
-│  ├ Hormiga_10      │  │  scope: slack_only      │  │  cada 100 feromonas │
-│  ├ Stanford        │  │  sig: 93cc56337ab6      │  │  → actualiza README │
-│  └ Colonia acepta  │  │                         │  │  → push automático  │
-│                    │  │  hormiga_slack_fiscal   │  │  → Gitea + GitHub   │
-│  hormiga_slack     │  │  scope: colonia_interna │  │                     │
-│  slack_fiscal      │  │  sig: dab3e970d4be      │  │  7,500+ feromonas   │
-│  red_a16_a20       │  │                         │  │  README vivo        │
-│  sig: 81e46806f1d0 │  │  DHT espejo SQLite      │  │                     │
-│                    │  │  bot /lbh-check :5000   │  │  Gitea :3001        │
-│                    │  │  #lbh-validations       │  │  GitHub HormigasAIS │
-└────────────────────┘  └─────────────────────────┘  └─────────────────────┘
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                    EVOLUCIÓN DEL ECOSISTEMA                                 ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  v0.1–1.5  ████  Core protocol + transport                          ✅      ║
-║  v1.6      ████  Daemon métricas + wiki Gitea                       ✅      ║
-║  v1.7      ████  Arquitectura completa + docs RFC-0001→0006         ✅      ║
-║  v1.8      ████  Network simulator + fanout híbrido n^(1/3)        ✅      ║
-║  v1.9      ████  Testnet 3 nodos Android                            ✅      ║
-║  v2.0-dev  ████  DHT Kademlia soberano                             ✅      ║
-║            ████  REST /v1/lbh/validate + 4 puntos seguridad        ✅      ║
-║            ████  Sensor daemon físico (batería + WiFi)             ✅      ║
-║            ████  Red distribuida A16↔A20 real                      ✅      ║
-║            ████  Colony Panel :8300 tiempo real                    ✅      ║
-║            ████  SÉFORIS v0.7 diagnóstico                          ✅      ║
-║            ████  MESENTERY v1.0 LICENSE                            ✅      ║
-║            ████  Heartbeat README automático                        ✅      ║
-║                                                                              ║
-║  v2.0      ░░░░  AirCity producción                               → 2027   ║
-║  v3.0      ░░░░  Open protocol + community                        → futuro ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                      MESENTERY v1.0                                         ║
-║              HormigasAIS Sovereign Specification License                    ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║                                                                              ║
-║  BASE LEGAL:  CC BY 4.0 + LBH Clause                                        ║
-║  ATRIBUCIÓN:  DOI 10.5281/zenodo.17767205 · CLHQ                            ║
-║  SOBERANÍA:   Sin propiedad centralizada exclusiva                           ║
-║  ÉTICA:       Sin daño civil · Sin vigilancia · Sin armas                    ║
-║                                                                              ║
-║  "A living system that connects, nourishes, and sustains                     ║
-║   distributed nodes without domination"                                      ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-╔══════════════════════════════════════════════════════════════════════════════╗
-║  LEYENDA                                                                     ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  ┌──┐  Servicio / componente activo                                          ║
-║  ▼     Flujo de feromonas / datos                                            ║
-║  ████  Capacidad implementada              ░░░░  Planificado                 ║
-║  ✅    Operativo en producción             →     Objetivo futuro             ║
-║  [sig] Firma HMAC-SHA256 (primeros 16 hex)                                   ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-
-CLHQ · Cristhiam Leonardo Hernández Quiñonez
-San Miguel, El Salvador 🇸🇻 · 2026
-DOI: 10.5281/zenodo.19177759
-github.com/HormigasAIS/lbh-node-service
-```
-
-> Representacion documentativa — no refleja estado en tiempo real.
+Este nodo forma parte de la colonia **HormigasAIS**, un ecosistema de agentes
+autonomos ligeros disenados para operar en el borde (Edge Computing) bajo el
+protocolo **LBH** (Lenguaje Binario HormigasAIS).
 
 ---
 
-## Colony Panel — Sistema en vivo
+## Documentacion Oficial 2026
 
-[![Colony Panel](docs/panel_colony.png)](docs/panel_colony.png)
+El manifiesto tecnico completo y las especificaciones v2.0-dev:
 
-| Metrica | Valor |
-|---|---|
-| Feromonas acumuladas | 7,500+ |
-| Nodos activos | 9 |
-| Nodo master | A16 192.168.1.5 |
-| Nodo sensor | A20 192.168.1.6 |
-| Actualizacion | cada 3s |
+- **DOI Certificado:** [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
+- **PDF Completo:** [Acceso Directo (Google Drive)](https://drive.google.com/file/d/1-tY-vlFfnBRmZj0quICDbksQVK2UCjQZ/view?usp=drivesdk)
+- **Repositorio:** [github.com/HormigasAIS/lbh-node-service](https://github.com/HormigasAIS/lbh-node-service)
 
-```bash
-python3 ~/hormigasais-lab/lbh_panel_web.py
-# http://[IP-LOCAL]:8300
-bash ~/hormigasais-core/scripts/start_colonia.sh
+---
+
+## Estado de la Colonia
+
+```
+Total feromonas: 9,226+
+Nodos activos:   9
+Nodo master:     A16 - 192.168.1.5 - LBH-DDCD
+Nodo sensor:     A20 - 192.168.1.6 - AirCity
+Platform:        Android ARM64 / Termux
 ```
 
 ---
 
-## Componentes y Servicios
+## Conectividad de la Colonia
 
-- `hormigasais-core` nodos_estado · sync_nodos_remotos · start_colonia · levantar_a20
-- Contratos **XOXO** hormiga_slack · slack_fiscal · red_a16_a20
-- Espejo **Slack** hormiga_slack_fiscal · DHT espejo SQLite · /lbh-check
-- Colony Heartbeat colony_heartbeat.py actualiza README cada 100 feromonas
-- SEFORIS v0.7 observador diagnostico bajo demanda
-
----
-
-## Evolucion del Ecosistema
-
-| Version | Hito | Estado |
-|---|---|---|
-| v0.1-v1.5 | Core protocol + transport | OK |
-| v1.6 | Daemon metricas + wiki Gitea | OK |
-| v1.7 | Arquitectura completa + RFC-0001-0006 | OK |
-| v1.8 | Network simulator + fanout hibrido | OK |
-| v1.9 | Testnet 3 nodos Android | OK |
-| v2.0-dev | DHT Kademlia + REST + seguridad | OK |
-| v2.0-dev | Sensor daemon fisico | OK |
-| v2.0-dev | Red distribuida A16+A20 | OK Mar 2026 |
-| v2.0-dev | Colony Panel + SEFORIS v0.7 | OK Mar 2026 |
-| v2.0-dev | MESENTERY v1.0 + Zenodo v2 | OK Mar 2026 |
-| v2.0 | AirCity produccion | 2027 |
-| v3.0 | Open protocol + community | futuro |
+<div style="font-family:monospace;line-height:1.8;border:1px solid #2e4a7a;
+padding:16px;border-radius:8px;background:#f0f7f0">
+<b>HormigasAIS - Infraestructura de Inteligencia Distribuida</b><br>
+<i>Protocolo LBH v1.1 - MESENTERY v1.0</i><br><br>
+<b>Conecta con la Colonia:</b><br>
+- <a href="https://github.com/HormigasAIS/lbh-node-service">GitHub - LBH Node Service</a><br>
+- <a href="https://doi.org/10.5281/zenodo.19177759">Zenodo DOI v2</a><br>
+- <a href="https://www.linkedin.com/in/cristhiam-lbh-architect">LinkedIn - Cristhiam LBH Architect</a><br><br>
+<b>Nota Etica:</b> Todas las creaciones de HormigasAIS respetan la soberania de datos
+y la integridad del borde (Edge Computing).<br>
+</div>
 
 ---
 
-### ✅ Validación Masiva LBH (Marzo 2026)
-* **Hito:** Simulación de escala v2.1 superada.
-* **Capacidad:** 500,000 nodos ARM64 validados en red distribuida.
-* **Reporte Técnico:** `HormigasAIS_LBH_Protocol_2026.pdf` generado exitosamente.
-* **Hash de Integridad:** 34f412286389b74cd8373ddc67d87fd287795ecb3db2f00582dcb63368b0cd19
+> Desarrollado desde Android/Termux en San Miguel, El Salvador.
+> Sin servidores externos. Sin nube. Soberania total.
 
----
-
-## MESENTERY v1.0 — Licencia Soberana
-
-- **Base legal:** CC BY 4.0 + LBH Clause
-- **Atribucion:** DOI 10.5281/zenodo.17767205 · CLHQ
-- **Soberania:** Sin propiedad centralizada exclusiva
-- **Etica:** Sin dano civil · Sin vigilancia · Sin armas
-
-> A living system that connects, nourishes, and sustains distributed nodes without domination.
-
----
-
-## Leyenda
-
-| Simbolo | Significado |
-|---|---|
-| `┌──┐` | Servicio / componente activo |
-| `▼` | Flujo de feromonas / datos |
-| `████` | Capacidad implementada |
-| `░░░░` | Planificado |
-| OK | Operativo en produccion |
-| [sig] | Firma HMAC-SHA256 primeros 16 hex |
-
----
-
-## Inicio rapido
-
-```bash
-git clone https://github.com/HormigasAIS/lbh-node-service.git
-cd lbh-node-service
-go build -o main main.go
-bash startup.sh
-curl http://localhost:8100/ping
-```
-
----
-
-## Autor
-
-**CLHQ — Cristhiam Leonardo Hernandez Quinonez**
-San Miguel, El Salvador 2026
-Desarrollado desde Android/Termux sin servidores sin nube.
-
-DOI: [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
-[github.com/HormigasAIS/lbh-node-service](https://github.com/HormigasAIS/lbh-node-service)
-
-*HormigasAIS — La colonia es soberana*
-
----
-
-## 🛡️ Registro de Validación del Protocolo (Última Verificación)
-**Fecha:** 2026-03-25 22:44:19
-**Nodo de Origen:** San Miguel, SV (Master-A16)
-
-| Parámetro | Valor de Verificación |
-| :--- | :--- |
-| **Nodos Validados** | 500,000 |
-| **Estado del Consenso** | Sincronizado (LBH-M2M) |
-| **Archivo de Reporte** | `HormigasAIS_LBH_Protocol_2026.pdf` |
-| **SHA-256 Checksum** | 34f412286389b74cd8373ddc67d87fd287795ecb3db2f00582dcb63368b0cd19 |
-
-> **Nota:** Este bloque confirma la integridad del protocolo tras la última simulación masiva de feromonas digitales.
+*HormigasAIS - La colonia es soberana*
