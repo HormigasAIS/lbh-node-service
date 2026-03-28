@@ -30,17 +30,17 @@ body{background:#0a0a0c;color:#00ffcc;font-family:Courier New,monospace;margin:2
 <table class="node-list">
 <thead><tr><th>ID Nodo</th><th>IP / Origen</th><th>Estado</th><th>Protocolo</th></tr></thead>
 <tbody>
-<tr><td>A16 (Master)</td><td>192.168.1.3</td><td class="status-online">MASTER</td><td>LBH-DDCD</td></tr>
+<tr><td>A16 (Master)</td><td>192.168.1.5</td><td class="status-online">MASTER</td><td>LBH-DDCD</td></tr>
 <tr><td>A20 (Sensor)</td><td>192.168.1.6</td><td class="status-online">ACTIVO</td><td>AirCity</td></tr>
 </tbody>
 </table>
 <p style="font-size:.8rem;margin-top:40px;color:#555">
-Acceso Hibrido: http://192.168.1.3:3001 | Sincronizado via Gitea ARM64
+Acceso Hibrido: http://192.168.1.5:3001 | Sincronizado via Gitea ARM64
 </p>
 <script>
 async function update(){
 try{
-const r=await fetch("http://192.168.1.3:3002/api/stats");
+const r=await fetch("/api/stats");
 const d=await r.json();
 document.getElementById("total").textContent=d.total.toLocaleString();
 document.getElementById("nodos").textContent=d.nodes.length;
