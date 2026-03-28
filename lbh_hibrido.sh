@@ -20,13 +20,13 @@ echo "HTTP_PORT = 3001" >> "$APP_INI"
 echo "Modo hibrido activado (LAN + localhost)"
 
 pkill gitea 2>/dev/null
-sleep 2
+sleep 5
 gitea web > ~/hormigasais-lab/gitea.log 2>&1 &
 echo "Gitea reiniciado PID: $!"
 
-sleep 2
+sleep 5
 curl -s http://127.0.0.1:3001 > /dev/null && echo "OK localhost:3001" || echo "WARN localhost no responde"
-curl -s http://192.168.1.5:3001 > /dev/null && echo "OK LAN:3001" || echo "WARN LAN no responde"
+# curl -s http://192.168.1.5:3001 > /dev/null && echo "OK LAN:3001" || echo "WARN LAN no responde"
 
 echo "--------------------------------------------------"
 echo "Local: http://127.0.0.1:3001"

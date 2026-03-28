@@ -12,3 +12,5 @@ lbh_nodo.db
 main
 client_vuelo.go
 historial_colonia.log
+*.tar.gz
+*.bak
