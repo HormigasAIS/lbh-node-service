@@ -20,7 +20,7 @@ El manifiesto tecnico completo y las especificaciones v2.0-dev:
 ## Estado de la Colonia
 
 ```
-Total feromonas: 9,226+
+Total feromonas: 23,223
 Nodos activos:   9
 Nodo master:     A16 - 192.168.1.5 - LBH-DDCD
 Nodo sensor:     A20 - 192.168.1.6 - AirCity
