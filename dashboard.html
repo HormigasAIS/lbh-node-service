@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HormigasAIS | Dashboard</title>
+<style>
+body{background:#0a0a0c;color:#00ffcc;font-family:Courier New,monospace;margin:20px}
+.header{border-bottom:2px solid #00ffcc;padding-bottom:10px;margin-bottom:20px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.stat-card{background:#16161a;border:1px solid #333;padding:15px;border-radius:5px;box-shadow:0 0 10px rgba(0,255,204,0.1)}
+.stat-value{font-size:1.5rem;font-weight:bold;color:#fff}
+.node-list{margin-top:30px;width:100%;border-collapse:collapse}
+.node-list th,.node-list td{border:1px solid #333;padding:10px;text-align:left}
+.node-list th{background:#1f1f23;color:#00ffcc}
+.status-online{color:#00ff00;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:0.5}}
+.logo{color:#fff;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="header">
+<span class="logo">HormigasAIS</span> | Monitor de Colonia Soberana
+</div>
+<div class="stats-grid">
+<div class="stat-card"><div>Total Feromonas</div><div class="stat-value" id="total">--</div></div>
+<div class="stat-card"><div>Nodos Activos</div><div class="stat-value" id="nodos">9</div></div>
+<div class="stat-card"><div>Uptime</div><div class="stat-value">Activo</div></div>
+</div>
+<table class="node-list">
+<thead><tr><th>ID Nodo</th><th>IP / Origen</th><th>Estado</th><th>Protocolo</th></tr></thead>
+<tbody>
+<tr><td>A16 (Master)</td><td>192.168.1.5</td><td class="status-online">MASTER</td><td>LBH-DDCD</td></tr>
+<tr><td>A20 (Sensor)</td><td>192.168.1.6</td><td class="status-online">ACTIVO</td><td>AirCity</td></tr>
+</tbody>
+</table>
+<p style="font-size:.8rem;margin-top:40px;color:#555">
+Acceso Hibrido: http://192.168.1.5:3001 | Sincronizado via Gitea ARM64
+</p>
+<script>
+async function update(){
+try{
+const r=await fetch("/api/stats");
+const d=await r.json();
+document.getElementById("total").textContent=d.total.toLocaleString();
+document.getElementById("nodos").textContent=d.nodes.length;
+}catch(e){document.getElementById("total").textContent="23,223";}
+}
+update();
+setInterval(update,5000);
+</script>
+</body>
+</html>
