@@ -1,7 +1,7 @@
 #!/bin/bash
 # HORMIGASAIS · levantar_a20_remoto.sh v0.2
 # Rescue remoto via SSH desde A16 → A20
-A20_IP=192.168.1.6
+A20_IP=192.168.1.7
 A20_PORT=8022
 echo "[RESCUE] Inspeccionando A20 ($A20_IP)..."
 if ping -c 1 -W 2 $A20_IP > /dev/null 2>&1; then

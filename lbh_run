@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "🐜 Ejecutando Supervisor LBH..."
+python3 /data/data/com.termux/files/home/hormigasais-lab/lbh-node-service/lbh_supervisor.py
+echo "📊 Estado actual:"
+cat /data/data/com.termux/files/home/hormigasais-lab/lbh-node-service/nodo_status.json
