@@ -63,7 +63,7 @@ PROTOCOLO LBH v1.1
 | Recurso | URL |
 |---|---|
 | GitHub | https://github.com/HormigasAIS/lbh-node-service |
-| Gitea soberano | http://127.0.0.1://localhost 3001/HormigasAIS-Colonia-Soberana/lbh-node-service |
+| Gitea soberano | http://git@github.com:HormigasAIS/lbh-node-service.git/HormigasAIS-Colonia-Soberana/lbh-node-service |
 | Colony Panel | http://192.168.1.5:8300 |
 | Zenodo v2 | https://doi.org/10.5281/zenodo.19177759 |
 | DOI protocolo | https://doi.org/10.5281/zenodo.17767205 |
