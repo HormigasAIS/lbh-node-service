@@ -1,0 +1,21 @@
+#!/bin/bash
+# LBH :: Generación Silenciosa de Reporte Soberano
+
+echo "🧠 LBH :: Iniciando persistencia de snapshot en almacenamiento interno..."
+
+# 1. Ejecutar el generador Python
+OUTPUT=$(python3 ~/hormigasais-lab/build_pdf_auto.py)
+
+# 2. Extraer datos de salida del generador
+FILE=$(echo "$OUTPUT" | grep "FILE_PATH=" | cut -d'=' -f2)
+SHA=$(echo "$OUTPUT" | grep "SHA256=" | cut -d'=' -f2)
+
+# 3. Validación de integridad y persistencia física
+if [ -f "$FILE" ]; then
+    echo "✅ ÉXITO: El reporte ha sido guardado físicamente."
+    echo "📂 RUTA: $FILE"
+    echo "🔐 SHA256: $SHA"
+    echo "📌 Estado: El archivo está disponible para gestión externa en Android."
+else
+    echo "❌ ERROR: No se detectó el archivo en el almacenamiento. Verifique permisos de escritura."
+fi
