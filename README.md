@@ -12,7 +12,7 @@ protocolo **LBH** (Lenguaje Binario HormigasAIS).
 El manifiesto tecnico completo y las especificaciones v2.0-dev:
 
 - **DOI Certificado:** [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
-- **PDF Completo:** [Acceso Directo (Google Drive)](https://drive.google.com/file/d/1WyaWrmdzml6zZz8wzYHMr9Hj3ZOlQk0k/preview
+- **PDF Completo:** [Acceso Directo (Google Drive)](https://drive.google.com/file/d/1JOvHY0G7vXjDt4WuYOE9gxFkCPwzQjcm/preview
 - **Repositorio:** [github.com/HormigasAIS/lbh-node-service](https://github.com/HormigasAIS/lbh-node-service)
 
 ---
