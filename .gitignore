@@ -5,3 +5,5 @@ sandbox_status.json
 *.tmp
 venv/
 __pycache__/
+bin/
+*.bak
