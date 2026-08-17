@@ -12,7 +12,7 @@ protocolo **LBH** (Lenguaje Binario HormigasAIS).
 El manifiesto tecnico completo y las especificaciones v2.0-dev:
 
 - **DOI Certificado:** [10.5281/zenodo.19177759](https://doi.org/10.5281/zenodo.19177759)
-- **PDF Completo:** [Acceso Directo (Google Drive)](https://drive.google.com/file/d/1JOvHY0G7vXjDt4WuYOE9gxFkCPwzQjcm/preview
+- **PDF Completo:** [Acceso Directo (Google Drive)](https://drive.google.com/file/d/1JOvHY0G7vXjDt4WuYOE9gxFkCPwzQjcm/preview)
 - **Repositorio:** [github.com/HormigasAIS/lbh-node-service](https://github.com/HormigasAIS/lbh-node-service)
 
 ---
@@ -20,10 +20,10 @@ El manifiesto tecnico completo y las especificaciones v2.0-dev:
 ## Estado de la Colonia
 
 ```
-Total feromonas: 23,223
+Total feromonas: Consultar via LBH API / DB local
 Nodos activos:   9
-Nodo master:     A16 - 192.168.1.5 - LBH-DDCD
-Nodo sensor:     A20 - 192.168.1.6 - AirCity
+Nodo master:     A16 - 192.168.1.x - LBH-DDCD
+Nodo sensor:     A20 - 192.168.1.x - AirCity
 Platform:        Android ARM64 / Termux
 ```
 
