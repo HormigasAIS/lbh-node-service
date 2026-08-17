@@ -7,3 +7,14 @@ venv/
 __pycache__/
 bin/
 *.bak
+
+# Archivos de datos e infraestructura local
+*.db
+*.sqlite
+*.db-journal
+*.secrets
+.env
+auditoria_archivos.txt
+
+# Binarios compilados
+bin/
